@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "language": "Langue"
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "email": "Email",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "noAccount": "Pas encore de compte ?",
+      "createAccount": "Créer un compte",
+      "error": "Identifiants incorrects"
+    },
+    "register": {
+      "title": "Créer un compte",
+      "firstname": "Prénom",
+      "lastname": "Nom",
+      "email": "Email",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "language": "Langue de préférence (optionnel)",
+      "submit": "S'inscrire",
+      "hasAccount": "Déjà un compte ?",
+      "loginLink": "Se connecter",
+      "required": "obligatoire",
+      "optional": "optionnel",
+      "errors": {
+        "passwordMismatch": "Les mots de passe ne correspondent pas",
+        "fillRequired": "Veuillez remplir tous les champs obligatoires",
+        "emailExists": "Cet email est déjà utilisé"
+      }
+    }
+  },
+  "home": {
+    "welcome": "EcoRide",
+    "tagline": "La plateforme de covoiturage qui récompense vos trajets écologiques 🌱",
+    "notLoggedIn": {
+      "message": "Connectez-vous pour réserver un trajet ou proposer le vôtre.",
+      "login": "Se connecter",
+      "register": "Créer un compte"
+    },
+    "loggedIn": {
+      "greeting": "Bonjour, {name} !",
+      "message": "Prêt à optimiser vos trajets et à économiser du CO₂ ?",
+      "seeTrips": "Voir les trajets disponibles"
+    }
+  },
+  "languages": {
+    "fr": "Français",
+    "en": "English"
+  },
+  "footer": {
+    "about": {
+      "title": "À propos",
+      "description": "EcoRide est la plateforme de covoiturage qui récompense vos trajets écologiques. Réduisez votre empreinte carbone tout en économisant."
+    },
+    "quickLinks": {
+      "title": "Liens rapides"
+    },
+    "contact": {
+      "title": "Contact",
+      "location": "Partout en France"
+    },
+    "rights": "Tous droits réservés.",
+    "eco": {
+      "carpooling": "Covoiturage",
+      "co2": "Réduction CO₂"
+    }
+  }
+}

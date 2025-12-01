@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "home": "Home",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "language": "Language"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create an account",
+      "error": "Invalid credentials"
+    },
+    "register": {
+      "title": "Create an account",
+      "firstname": "First Name",
+      "lastname": "Last Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "language": "Preferred language (optional)",
+      "submit": "Sign up",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "required": "required",
+      "optional": "optional",
+      "errors": {
+        "passwordMismatch": "Passwords do not match",
+        "fillRequired": "Please fill in all required fields",
+        "emailExists": "This email is already in use"
+      }
+    }
+  },
+  "home": {
+    "welcome": "EcoRide",
+    "tagline": "The carpooling platform that rewards your eco-friendly trips 🌱",
+    "notLoggedIn": {
+      "message": "Log in to book a trip or offer yours.",
+      "login": "Sign in",
+      "register": "Create an account"
+    },
+    "loggedIn": {
+      "greeting": "Hello, {name}!",
+      "message": "Ready to optimize your trips and save CO₂?",
+      "seeTrips": "See available trips"
+    }
+  },
+  "languages": {
+    "fr": "Français",
+    "en": "English"
+  },
+  "footer": {
+    "about": {
+      "title": "About",
+      "description": "EcoRide is the carpooling platform that rewards your eco-friendly trips. Reduce your carbon footprint while saving money."
+    },
+    "quickLinks": {
+      "title": "Quick Links"
+    },
+    "contact": {
+      "title": "Contact",
+      "location": "Everywhere in France"
+    },
+    "rights": "All rights reserved.",
+    "eco": {
+      "carpooling": "Carpooling",
+      "co2": "CO₂ Reduction"
+    }
+  }
+}
