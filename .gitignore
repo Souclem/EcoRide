@@ -1,0 +1,30 @@
+# Environment variables
+eco_ride_back/.env
+eco_ride_back/.env.test
+eco_ride_front/.env
+
+# Node modules
+node_modules/
+eco_ride_back/node_modules/
+eco_ride_front/node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+*.lcov
+
+# Build
+dist/
+build/
