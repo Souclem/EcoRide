@@ -4,7 +4,14 @@
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
-    "language": "Language"
+    "language": "Language",
+    "search": "Search",
+    "createTrip": "Create a trip",
+    "myTrips": "My trips",
+    "admin": "Administration",
+    "marketing": "Marketing",
+    "freePlan": "Free",
+    "currentPlan": "Plan"
   },
   "auth": {
     "login": {
@@ -14,7 +21,11 @@
       "submit": "Sign in",
       "noAccount": "Don't have an account?",
       "createAccount": "Create an account",
-      "error": "Invalid credentials"
+      "error": "Invalid credentials",
+      "loading": "Signing in...",
+      "fillAllFields": "Please fill in all fields",
+      "invalidEmail": "Invalid email",
+      "incorrectCredentials": "Incorrect credentials"
     },
     "register": {
       "title": "Create an account",
@@ -23,16 +34,26 @@
       "email": "Email",
       "password": "Password",
       "confirmPassword": "Confirm Password",
-      "language": "Preferred language (optional)",
+      "language": "Preferred language",
       "submit": "Sign up",
       "hasAccount": "Already have an account?",
       "loginLink": "Sign in",
       "required": "required",
       "optional": "optional",
+      "loading": "Signing up...",
       "errors": {
         "passwordMismatch": "Passwords do not match",
         "fillRequired": "Please fill in all required fields",
-        "emailExists": "This email is already in use"
+        "emailExists": "This email is already in use",
+        "firstnameRequired": "First name is required",
+        "lastnameRequired": "Last name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email format",
+        "passwordRequired": "Password is required",
+        "passwordTooShort": "Password must be at least 6 characters",
+        "confirmPasswordRequired": "Please confirm password",
+        "registrationError": "Registration error",
+        "correctErrors": "Please correct the errors in the form"
       }
     }
   },
@@ -47,7 +68,171 @@
     "loggedIn": {
       "greeting": "Hello, {name}!",
       "message": "Ready to optimize your trips and save CO₂?",
-      "seeTrips": "See available trips"
+      "seeTrips": "See available trips",
+      "createTrip": "Create a trip"
+    },
+    "features": {
+      "save": {
+        "title": "Save Money",
+        "description": "Reduce your transport costs by sharing your trips"
+      },
+      "eco": {
+        "title": "Eco-Friendly",
+        "description": "Reduce your carbon footprint and plant trees"
+      },
+      "community": {
+        "title": "Community",
+        "description": "Meet new people and share your trips"
+      }
+    },
+    "stats": {
+      "co2Saved": "CO₂ saved",
+      "treesPlanted": "Trees planted",
+      "tripsShared": "Shared trips"
+    },
+    "globalStats": {
+      "title": "EcoRide Collective Impact",
+      "co2": "kg CO₂ saved",
+      "trees": "Equivalent trees",
+      "trips": "Shared trips",
+      "users": "Eco-riders"
+    }
+  },
+  "createTrip": {
+    "title": "Create a trip",
+    "subtitle": "Offer a carpool and share your transport costs",
+    "formTitle": "Trip details",
+    "startPoint": "Starting point",
+    "endPoint": "Destination",
+    "startPlaceholder": "E.g.: 10 Rue de la Gare, Paris",
+    "endPlaceholder": "E.g.: 5 Place Bellecour, Lyon",
+    "date": "Date",
+    "time": "Time",
+    "pricePerSeat": "Price per seat (€)",
+    "suggestedPrice": "(suggested: {price}€)",
+    "adjustPrice": "You can adjust the suggested price",
+    "availableSeats": "Available seats",
+    "requiredFields": "Required fields",
+    "submit": "Create trip 🚗",
+    "creating": "Creating...",
+    "mapTitle": "Click on the map to set your route",
+    "mapSubtitle": "Or use the address search",
+    "routeInfo": {
+      "distance": "Distance: {distance} km",
+      "routeType": "Road route (OSRM)",
+      "duration": "Estimated duration: {duration}",
+      "arrival": "Expected arrival: {time}"
+    },
+    "errors": {
+      "selectAddresses": "Please select a starting point and destination",
+      "routeNotCalculated": "Route has not been calculated",
+      "dateRequired": "Departure date is required",
+      "timeRequired": "Departure time is required",
+      "futureDateRequired": "Departure date must be in the future",
+      "priceRequired": "Price must be greater than €0",
+      "priceTooHigh": "Price seems too high (max €500)",
+      "seatsRequired": "Number of seats must be greater than 0",
+      "seatsMax": "Number of seats cannot exceed 8",
+      "correctErrors": "Please correct the errors in the form",
+      "creationError": "Error creating trip"
+    },
+    "success": "Trip created successfully!"
+  },
+  "listTrips": {
+    "title": "Search for a trip",
+    "subtitle": "Find a carpool that matches your needs",
+    "searchTitle": "Geographic search",
+    "searchDescription": "Use the map or search to define your trip. Trips within a {radius}km radius will be displayed.",
+    "startPoint": "Starting point",
+    "endPoint": "Destination",
+    "startPlaceholder": "Departure city",
+    "endPlaceholder": "Arrival city",
+    "radius": "Search radius: {radius} km",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "search": "Search",
+    "reset": "Reset",
+    "mapTitle": "Search map",
+    "mapDescription": "Click to define your route - Circles show the search radius",
+    "mapZoomTip": "Click on the map then use Ctrl+Scroll to zoom",
+    "loading": "Loading trips...",
+    "noTripsFound": "No trips found",
+    "noTripsMessage": "Try increasing the search radius or modifying your criteria",
+    "resetFilters": "Reset filters",
+    "resultsCount": "{count} trip found | {count} trips found",
+    "radiusInfo": "within a {radius}km radius",
+    "clickForDetails": "Click to see details",
+    "book": "Book",
+    "driver": "Driver",
+    "departure": "Departure",
+    "arrival": "Arrival",
+    "date": "Date",
+    "distance": "Distance",
+    "seats": "Seats",
+    "price": "Price",
+    "perSeat": "per seat",
+    "co2Saved": "{amount} kg CO2 saved by this trip",
+    "error": "Unable to load trips"
+  },
+  "myTrips": {
+    "title": "My trips",
+    "subtitle": "Manage your ongoing, upcoming trips and history",
+    "ongoing": "Ongoing now",
+    "upcoming": "Upcoming",
+    "history": "History",
+    "noOngoing": "No ongoing trips",
+    "noUpcoming": "No upcoming trips",
+    "noHistory": "No trips in history",
+    "driver": "Driver",
+    "passenger": "Passenger",
+    "perSeat": "per seat",
+    "departure": "Departure",
+    "arrival": "Arrival",
+    "bookedSeats": "{booked} seat(s) booked",
+    "seatsInfo": "{taken}/{total} seats booked",
+    "ongoingStatus": "Ongoing",
+    "loading": "Loading...",
+    "validationCode": "Validation code",
+    "showToDriver": "Show to driver",
+    "codeUsed": "Code used",
+    "earnings": "Earnings",
+    "co2Saved": "CO₂ saved",
+    "treesPlanted": "Trees planted"
+  },
+  "booking": {
+    "title": "Book this trip",
+    "subtitle": "Complete your booking and secure payment",
+    "confirmed": "Booking confirmed!",
+    "tripDetails": "Trip details",
+    "departure": "Departure",
+    "arrival": "Arrival",
+    "date": "Date",
+    "seatsLabel": "Number of seats",
+    "availableSeats": "{count} seat available | {count} seats available",
+    "pricePerSeat": "Price per seat",
+    "numberOfSeats": "Number of seats",
+    "total": "Total",
+    "priceBreakdown": "Price breakdown",
+    "paymentInfo": "Payment information",
+    "securedByStripe": "Secure payment by Stripe",
+    "cancel": "Cancel",
+    "pay": "Pay {amount}€",
+    "processing": "Processing...",
+    "close": "Close",
+    "success": {
+      "title": "Booking confirmed!",
+      "message": "Your payment has been accepted and your booking is confirmed.",
+      "validationCode": "Your validation code:",
+      "showCodeToDriver": "Show this code to the driver at the start of the trip"
+    },
+    "errors": {
+      "paymentSystemNotReady": "Payment system is not ready",
+      "mustBeLoggedIn": "You must be logged in to book",
+      "selectSeats": "Please select at least 1 seat",
+      "notEnoughSeats": "Only {count} seat(s) available",
+      "maxSeats": "You cannot book more than 8 seats",
+      "bookingError": "Booking error",
+      "stripeError": "Payment system initialization error"
     }
   },
   "languages": {
@@ -71,5 +256,201 @@
       "carpooling": "Carpooling",
       "co2": "CO₂ Reduction"
     }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "subtitle": "Overview and management of the EcoRide platform"
+    },
+    "stats": {
+      "totalUsers": "Total users",
+      "totalTrips": "Total trips",
+      "totalBookings": "Total bookings",
+      "co2Saved": "CO₂ saved"
+    },
+    "sections": {
+      "users": "User management",
+      "usersDesc": "View and manage all registered users",
+      "trips": "Trip management",
+      "tripsDesc": "Moderate and supervise all trips",
+      "promotions": "Promotion management",
+      "promotionsDesc": "Create and manage promotional campaigns",
+      "payments": "Payment management",
+      "paymentsDesc": "Track transactions and payments",
+      "reports": "Reports",
+      "reportsDesc": "Generate activity reports and statistics",
+      "settings": "Settings",
+      "settingsDesc": "Platform configuration"
+    },
+    "actions": {
+      "manage": "Manage",
+      "view": "View",
+      "generate": "Generate",
+      "configure": "Configure"
+    }
+  },
+  "marketer": {
+    "dashboard": {
+      "title": "Marketing Dashboard",
+      "subtitle": "Manage your promotional campaigns"
+    },
+    "stats": {
+      "activePromotions": "Active promotions",
+      "totalPromotions": "Total promotions",
+      "usersReached": "Users reached",
+      "conversionRate": "Conversion rate"
+    },
+    "sections": {
+      "promotionsList": "Promotion list"
+    },
+    "actions": {
+      "createPromo": "Create promotion",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "messages": {
+      "noPromotions": "No promotions at the moment",
+      "createFirst": "Create your first promotional campaign"
+    }
+  },
+  "subscriptions": {
+    "title": "Subscription Plans",
+    "subtitle": "Enjoy exclusive benefits with our monthly plans",
+    "choosePlan": "Choose your plan",
+    "otherPlans": "Other available plans",
+    "currentPlan": "Your Current Subscription",
+    "popular": "Popular",
+    "subscribe": "Subscribe",
+    "alreadySubscribed": "Already subscribed",
+    "cancel": "Cancel subscription",
+    "confirmSubscription": "Confirm subscription",
+    "confirmPayment": "Confirm payment",
+    "paymentInfo": "Payment information",
+    "stripeIntegration": "Stripe integration coming soon...",
+    "changePlan": "Change plan",
+    "upgrade": "Upgrade to this plan",
+    "downgrade": "Downgrade to this plan",
+    "benefit": {
+      "priority": "Priority support",
+      "cancel": "Cancel anytime"
+    },
+    "cancelConfirm": {
+      "title": "Cancel your subscription?",
+      "message": "You will keep access until {date}. Do you want to continue?",
+      "confirm": "Yes, cancel",
+      "cancel": "No, keep my subscription"
+    },
+    "changePlanConfirm": {
+      "upgradeTitle": "Upgrade to {planName}?",
+      "upgradeMessage": "You will be charged prorated immediately. Estimated amount: €{amount}",
+      "downgradeTitle": "Downgrade to {planName}?",
+      "downgradeMessage": "The change will take effect on {date}. You keep your current plan until then.",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "invalidCardData": "The bank details are incorrect",
+      "subscriptionError": "Error during subscription",
+      "cancelError": "Error during cancellation",
+      "changePlanError": "Error changing plan"
+    },
+    "success": {
+      "subscribed": "Payment validated! You are now subscribed to the \"{planName}\" plan.",
+      "cancelled": "Your subscription will be cancelled on {date}",
+      "upgraded": "You have upgraded to {planName}!",
+      "downgraded": "The change to {planName} will take effect on {date}"
+    }
+  },
+  "marketer": {
+    "subscriptions": {
+      "title": "Subscription Plans Management",
+      "subtitle": "Create and manage your subscription plans",
+      "createPlan": "Create a plan",
+      "editPlan": "Edit plan",
+      "myPlans": "My subscription plans",
+      "noPlans": "No subscription plan created",
+      "price": "Monthly price",
+      "reduction": "Trip reduction",
+      "treeMultiplier": "Tree multiplier",
+      "active": "Active",
+      "inactive": "Inactive",
+      "perMonth": "/month",
+      "trips": "trips",
+      "trees": "trees",
+      "confirmDeactivate": "Are you sure you want to deactivate this plan?",
+      "confirmActivate": "Are you sure you want to activate this plan?",
+      "deactivated": "Plan deactivated successfully",
+      "activated": "Plan activated successfully"
+    }
+  },
+  "promotions": {
+    "fees": "fees",
+    "trees": "trees",
+    "zoneRestriction": "limited zone",
+    "manager": {
+      "title": "Promotion Management",
+      "subtitle": "Create and manage your promotional campaigns",
+      "create": "Create a promotion",
+      "edit": "Edit promotion",
+      "myPromotions": "My promotions",
+      "noPromotions": "No promotions created"
+    },
+    "form": {
+      "startDate": "Start date",
+      "endDate": "End date",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "validity": "Validity period",
+      "feeDiscount": "Fee discount",
+      "feeDiscountHelp": "Percentage discount applied to service fees",
+      "treeMultiplier": "Tree multiplier",
+      "treeMultiplierHelp": "Multiplies the number of trees planted (e.g.: 2.0 = double)",
+      "scope": "Scope",
+      "zoneSettings": "Zone settings",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "radius": "Radius (km)",
+      "zoneTip": "The promotion will apply if departure OR arrival is within this zone",
+      "imageUrl": "Image URL",
+      "translations": "Translations",
+      "titlePlaceholder": "Promotion title",
+      "descriptionPlaceholder": "Detailed description",
+      "create": "Create",
+      "update": "Update"
+    },
+    "scope": {
+      "everywhere": "Everywhere",
+      "zone": "Geographic zone"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "expired": "Expired"
+    },
+    "messages": {
+      "created": "Promotion created successfully",
+      "updated": "Promotion updated successfully",
+      "deleted": "Promotion deleted successfully",
+      "confirmDelete": "Are you sure you want to delete this promotion?",
+      "error": "Error during operation",
+      "translationsRequired": "FR and EN translations are required",
+      "zoneDataRequired": "Zone data is required for a geographic promotion"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "processing": "Processing...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deactivate": "Deactivate",
+    "name": "Name",
+    "description": "Description"
+  },
+  "error": {
+    "loadingPlans": "Error loading plans"
   }
 }

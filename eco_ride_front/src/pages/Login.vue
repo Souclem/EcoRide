@@ -1,67 +1,96 @@
 <script setup>
 import { ref } from "vue";
 import { useUserStore } from "../store/user.store";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+import AlertMessage from "../components/ui/AlertMessage.vue";
+import FormField from "../components/ui/FormField.vue";
 
 const email = ref("");
 const password = ref("");
+const errorMessage = ref("");
+const isLoading = ref(false);
 const userStore = useUserStore();
 const router = useRouter();
+const route = useRoute();
 
 async function submit() {
+  // Réinitialiser l'erreur
+  errorMessage.value = "";
+
+  // Validation côté client
+  if (!email.value || !password.value) {
+    errorMessage.value = "Veuillez remplir tous les champs";
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email.value)) {
+    errorMessage.value = "Email invalide";
+    return;
+  }
+
   try {
+    isLoading.value = true;
     await userStore.loginUser({ email: email.value, password: password.value });
-    router.push("/");
+
+    // Rediriger vers la page demandée ou vers l'accueil
+    const redirectTo = route.query.redirect || '/';
+    router.push(redirectTo);
   } catch (err) {
     console.error("Erreur complète:", err);
-    const message = err.response?.data?.message || err.message || "Identifiants incorrects";
-    alert(message);
+    errorMessage.value = err.response?.data?.message || err.message || "Identifiants incorrects";
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>
 
 <template>
-  <div class="w-full px-4">
+  <main class="w-full px-4">
     <div class="max-w-md mx-auto">
-    <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+    <article class="card">
       <!-- En-tête avec gradient -->
-      <div class="bg-gradient-to-r from-ecoGreen to-green-600 p-8 text-white">
+      <header class="card-header">
         <h2 class="text-3xl font-bold mb-2">{{ $t('auth.login.title') }}</h2>
         <p class="text-green-100 text-sm">{{ $t('home.tagline') }}</p>
-      </div>
+      </header>
 
       <!-- Formulaire -->
-      <div class="p-8">
-        <div class="space-y-5">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              {{ $t('auth.login.email') }}
-            </label>
-            <input
-              v-model="email"
-              type="email"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ecoGreen focus:border-transparent transition-all"
-              placeholder="votre@email.com"
-            />
-          </div>
+      <section class="card-body">
+        <!-- Message d'erreur -->
+        <AlertMessage
+          v-if="errorMessage"
+          type="error"
+          :message="errorMessage"
+          class="mb-5"
+        />
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              {{ $t('auth.login.password') }}
-            </label>
-            <input
-              v-model="password"
-              type="password"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ecoGreen focus:border-transparent transition-all"
-              placeholder="••••••••"
-            />
-          </div>
+        <div class="space-y-5">
+          <FormField
+            v-model="email"
+            :label="$t('auth.login.email')"
+            type="email"
+            placeholder="votre@email.com"
+            autocomplete="email"
+            @keyup.enter="submit"
+          />
+
+          <FormField
+            v-model="password"
+            :label="$t('auth.login.password')"
+            type="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            @keyup.enter="submit"
+          />
 
           <button
-            @click="submit"
-            class="w-full bg-gradient-to-r from-ecoGreen to-green-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+            type="button"
+            @click.prevent="submit"
+            :disabled="isLoading"
+            class="btn btn-primary btn-md w-full disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
-            {{ $t('auth.login.submit') }}
+            {{ isLoading ? 'Connexion en cours...' : $t('auth.login.submit') }}
           </button>
         </div>
 
@@ -74,9 +103,9 @@ async function submit() {
             </router-link>
           </p>
         </div>
-      </div>
+      </section>
+    </article>
     </div>
-    </div>
-  </div>
+  </main>
 </template>
 

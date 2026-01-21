@@ -3,6 +3,8 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useUserStore } from "../store/user.store";
 import { useRouter } from "vue-router";
+import AlertMessage from "../components/ui/AlertMessage.vue";
+import FormField from "../components/ui/FormField.vue";
 
 const { t } = useI18n();
 
@@ -13,23 +15,60 @@ const password = ref("");
 const confirmPassword = ref("");
 const language = ref("fr");
 
+// Gestion des erreurs
+const errors = ref({});
+const errorMessage = ref("");
+const isLoading = ref(false);
+
 const userStore = useUserStore();
 const router = useRouter();
 
-async function submit() {
-  // Validation de la confirmation du mot de passe
-  if (password.value !== confirmPassword.value) {
-    alert(t('auth.register.errors.passwordMismatch'));
-    return;
+// Validation du formulaire
+function validateForm() {
+  errors.value = {};
+  errorMessage.value = "";
+
+  // 1. Validation des champs obligatoires
+  if (!name.value || name.value.trim() === "") {
+    errors.value.name = "Le prénom est obligatoire";
   }
 
-  // Validation des champs obligatoires
-  if (!email.value || !name.value || !last_name.value || !password.value) {
-    alert(t('auth.register.errors.fillRequired'));
+  if (!last_name.value || last_name.value.trim() === "") {
+    errors.value.last_name = "Le nom est obligatoire";
+  }
+
+  if (!email.value || email.value.trim() === "") {
+    errors.value.email = "L'email est obligatoire";
+  } else if (!email.value.includes("@") || !email.value.includes(".")) {
+    errors.value.email = "Format d'email invalide";
+  }
+
+  // 2. Validation du mot de passe
+  if (!password.value) {
+    errors.value.password = "Le mot de passe est obligatoire";
+  } else if (password.value.length < 6) {
+    errors.value.password = "Le mot de passe doit contenir au moins 6 caractères";
+  }
+
+  // 3. Validation de la confirmation
+  if (!confirmPassword.value) {
+    errors.value.confirmPassword = "Veuillez confirmer le mot de passe";
+  } else if (password.value !== confirmPassword.value) {
+    errors.value.confirmPassword = "Les mots de passe ne correspondent pas";
+  }
+
+  return Object.keys(errors.value).length === 0;
+}
+
+async function submit() {
+  // Validation côté client
+  if (!validateForm()) {
+    errorMessage.value = "Veuillez corriger les erreurs dans le formulaire";
     return;
   }
 
   try {
+    isLoading.value = true;
     await userStore.registerUser({
       email: email.value,
       name: name.value,
@@ -40,94 +79,81 @@ async function submit() {
     router.push("/");
   } catch (err) {
     console.error("Erreur complète:", err);
-    const message = err.response?.data?.message || err.message || t('auth.register.errors.fillRequired');
-    alert(message);
+    errorMessage.value = err.response?.data?.message || err.message || "Erreur lors de l'inscription";
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>
 
 <template>
-  <div class="w-full px-4">
+  <main class="w-full px-4">
     <div class="max-w-2xl mx-auto">
-    <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+    <article class="card">
       <!-- En-tête avec gradient -->
-      <div class="bg-gradient-to-r from-ecoGreen to-green-600 p-8 text-white">
+      <header class="card-header">
         <h2 class="text-3xl font-bold mb-2">{{ $t('auth.register.title') }}</h2>
         <p class="text-green-100 text-sm">{{ $t('home.tagline') }}</p>
-      </div>
+      </header>
 
       <!-- Formulaire -->
-      <div class="p-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <!-- Prénom -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              {{ $t('auth.register.firstname') }} <span class="text-red-500">*</span>
-            </label>
-            <input
-              v-model="name"
-              type="text"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ecoGreen focus:border-transparent transition-all"
-              required
-            />
-          </div>
+      <section class="card-body">
+        <!-- Message d'erreur général -->
+        <AlertMessage
+          v-if="errorMessage"
+          type="error"
+          :message="errorMessage"
+          class="mb-5"
+        />
 
-          <!-- Nom -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              {{ $t('auth.register.lastname') }} <span class="text-red-500">*</span>
-            </label>
-            <input
-              v-model="last_name"
-              type="text"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ecoGreen focus:border-transparent transition-all"
-              required
-            />
-          </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <FormField
+            v-model="name"
+            :label="$t('auth.register.firstname')"
+            type="text"
+            required
+            :error="errors.name"
+          />
+
+          <FormField
+            v-model="last_name"
+            :label="$t('auth.register.lastname')"
+            type="text"
+            required
+            :error="errors.last_name"
+          />
         </div>
 
         <div class="space-y-5 mt-5">
-          <!-- Email -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              {{ $t('auth.register.email') }} <span class="text-red-500">*</span>
-            </label>
-            <input
-              v-model="email"
-              type="email"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ecoGreen focus:border-transparent transition-all"
-              placeholder="votre@email.com"
-              required
-            />
-          </div>
+          <FormField
+            v-model="email"
+            :label="$t('auth.register.email')"
+            type="email"
+            placeholder="votre@email.com"
+            autocomplete="email"
+            required
+            :error="errors.email"
+          />
 
-          <!-- Mot de passe -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              {{ $t('auth.register.password') }} <span class="text-red-500">*</span>
-            </label>
-            <input
-              v-model="password"
-              type="password"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ecoGreen focus:border-transparent transition-all"
-              placeholder="••••••••"
-              required
-            />
-          </div>
+          <FormField
+            v-model="password"
+            :label="$t('auth.register.password')"
+            type="password"
+            placeholder="••••••••"
+            autocomplete="new-password"
+            required
+            :error="errors.password"
+          />
 
-          <!-- Confirmation mot de passe -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              {{ $t('auth.register.confirmPassword') }} <span class="text-red-500">*</span>
-            </label>
-            <input
-              v-model="confirmPassword"
-              type="password"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ecoGreen focus:border-transparent transition-all"
-              placeholder="••••••••"
-              required
-            />
-          </div>
+          <FormField
+            v-model="confirmPassword"
+            :label="$t('auth.register.confirmPassword')"
+            type="password"
+            placeholder="••••••••"
+            autocomplete="new-password"
+            required
+            :error="errors.confirmPassword"
+          />
 
           <!-- Langue -->
           <div>
@@ -136,7 +162,7 @@ async function submit() {
             </label>
             <select
               v-model="language"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ecoGreen focus:border-transparent transition-all bg-white"
+              class="input-field w-full bg-white"
             >
               <option value="fr">{{ $t('languages.fr') }}</option>
               <option value="en">{{ $t('languages.en') }}</option>
@@ -145,9 +171,10 @@ async function submit() {
 
           <button
             @click="submit"
-            class="w-full bg-gradient-to-r from-ecoGreen to-green-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+            :disabled="isLoading"
+            class="btn btn-primary btn-md w-full disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
-            {{ $t('auth.register.submit') }}
+            {{ isLoading ? 'Inscription en cours...' : $t('auth.register.submit') }}
           </button>
         </div>
 
@@ -160,10 +187,10 @@ async function submit() {
             </router-link>
           </p>
         </div>
-      </div>
+      </section>
+    </article>
     </div>
-    </div>
-  </div>
+  </main>
 </template>
 
 

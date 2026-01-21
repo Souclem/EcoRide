@@ -1,118 +1,165 @@
 <script setup>
-import { useUserStore } from "../store/user.store";
+import { onMounted } from 'vue'
+import { useUserStore } from '@/store/index.js';
+import { useStatsStore } from '@/store/index.js'
+import AlertMessage from '@/components/ui/AlertMessage.vue'
 
 const userStore = useUserStore();
+const statsStore = useStatsStore();
+
+onMounted(async () => {
+  try {
+    await statsStore.fetchGlobalStats()
+  } catch (error) {
+    console.error('Erreur chargement statistiques:', error)
+  }
+})
 </script>
 
 <template>
-  <div class="w-full px-4">
+  <main class="w-full px-4">
     <div class="container mx-auto max-w-6xl">
 
     <!-- HERO SECTION -->
-    <div class="text-center mb-16">
+    <header class="text-center mb-16">
       <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-ecoGreen to-green-600 bg-clip-text text-transparent mb-6">
         {{ $t('home.welcome') }}
       </h1>
       <p class="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
         {{ $t('home.tagline') }}
       </p>
-    </div>
+    </header>
+
+    <!-- Message d'erreur -->
+    <AlertMessage
+      v-if="statsStore.error"
+      type="error"
+      :message="statsStore.error"
+      class="mb-6"
+    />
 
     <!-- SI NON CONNECTÉ -->
-    <div v-if="!userStore.isLoggedIn">
+    <section v-if="!userStore.isLoggedIn">
       <!-- Call to Action -->
-      <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12 mb-12">
+      <article class="card card-body mb-12">
         <p class="text-center text-lg text-gray-700 mb-8">
           {{ $t('home.notLoggedIn.message') }}
         </p>
 
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <router-link
-            to="/login"
-            class="bg-gradient-to-r from-ecoGreen to-green-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 text-center"
-          >
+        <!-- Statistiques globales -->
+        <section v-if="!statsStore.loading && statsStore.globalStats" class="mb-8">
+          <div class="bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl p-8 text-white shadow-xl">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8">
+              🌍 {{ $t('home.globalStats.title') }}
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div class="text-center">
+                <div class="text-4xl md:text-5xl font-black mb-2">{{ statsStore.globalStats.total_co2_saved?.toFixed(2) || 0 }}</div>
+                <div class="text-sm md:text-base opacity-90">{{ $t('home.globalStats.co2') }}</div>
+              </div>
+              <div class="text-center">
+                <div class="text-4xl md:text-5xl font-black mb-2">{{ statsStore.globalStats.total_trees_planted?.toFixed(2) || 0 }}</div>
+                <div class="text-sm md:text-base opacity-90">{{ $t('home.globalStats.trees') }}</div>
+              </div>
+              <div class="text-center">
+                <div class="text-4xl md:text-5xl font-black mb-2">{{ statsStore.globalStats.total_trips || 0 }}</div>
+                <div class="text-sm md:text-base opacity-90">{{ $t('home.globalStats.trips') }}</div>
+              </div>
+              <div class="text-center">
+                <div class="text-4xl md:text-5xl font-black mb-2">{{ statsStore.globalStats.total_users || 0 }}</div>
+                <div class="text-sm md:text-base opacity-90">{{ $t('home.globalStats.users') }}</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <nav class="flex flex-col sm:flex-row gap-4 justify-center">
+          <router-link to="/login" class="btn-primary btn-lg text-center">
             {{ $t('home.notLoggedIn.login') }}
           </router-link>
 
-          <router-link
-            to="/register"
-            class="bg-white border-2 border-ecoGreen text-ecoGreen px-8 py-4 rounded-xl font-semibold hover:bg-ecoGreen hover:text-white transition-all duration-200 text-center"
-          >
+          <router-link to="/register" class="btn-secondary btn-lg text-center">
             {{ $t('home.notLoggedIn.register') }}
           </router-link>
-        </div>
-      </div>
+        </nav>
+      </article>
 
       <!-- Features Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Économie -->
-        <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
+        <article class="card-hover p-6 text-center">
           <div class="text-5xl mb-4">💰</div>
-          <h3 class="text-xl font-bold text-gray-800 mb-2">Économisez</h3>
-          <p class="text-gray-600 text-sm">Réduisez vos frais de transport en partageant vos trajets</p>
-        </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">{{ $t('home.features.save.title') }}</h3>
+          <p class="text-gray-600 text-sm">{{ $t('home.features.save.description') }}</p>
+        </article>
 
         <!-- Écologie -->
-        <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
+        <article class="card-hover p-6 text-center">
           <div class="text-5xl mb-4">🌱</div>
-          <h3 class="text-xl font-bold text-gray-800 mb-2">Écologique</h3>
-          <p class="text-gray-600 text-sm">Réduisez votre empreinte carbone et plantez des arbres</p>
-        </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">{{ $t('home.features.eco.title') }}</h3>
+          <p class="text-gray-600 text-sm">{{ $t('home.features.eco.description') }}</p>
+        </article>
 
         <!-- Communauté -->
-        <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
+        <article class="card-hover p-6 text-center">
           <div class="text-5xl mb-4">🤝</div>
-          <h3 class="text-xl font-bold text-gray-800 mb-2">Communauté</h3>
-          <p class="text-gray-600 text-sm">Rencontrez de nouvelles personnes et partagez vos trajets</p>
-        </div>
-      </div>
-    </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">{{ $t('home.features.community.title') }}</h3>
+          <p class="text-gray-600 text-sm">{{ $t('home.features.community.description') }}</p>
+        </article>
+      </section>
+    </section>
 
     <!-- SI CONNECTÉ -->
-    <div v-else>
-      <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-          {{ $t('home.loggedIn.greeting', { name: userStore.user.name || userStore.user.email }) }}
-        </h2>
+    <section v-else>
+      <article class="card card-body text-center">
+        <header>
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+            {{ $t('home.loggedIn.greeting', { name: userStore.user.name || userStore.user.email }) }}
+          </h2>
+          <p class="text-lg text-gray-600 mb-8">
+            {{ $t('home.loggedIn.message') }}
+          </p>
+        </header>
 
-        <p class="text-lg text-gray-600 mb-8">
-          {{ $t('home.loggedIn.message') }}
-        </p>
+        <!-- Statistiques globales -->
+        <section v-if="!statsStore.loading && statsStore.globalStats" class="mb-8">
+          <div class="bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl p-8 text-white shadow-xl">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8">
+              🌍 {{ $t('home.globalStats.title') }}
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div class="text-center">
+                <div class="text-4xl md:text-5xl font-black mb-2">{{ statsStore.globalStats.total_co2_saved?.toFixed(2) || 0 }}</div>
+                <div class="text-sm md:text-base opacity-90">{{ $t('home.globalStats.co2') }}</div>
+              </div>
+              <div class="text-center">
+                <div class="text-4xl md:text-5xl font-black mb-2">{{ statsStore.globalStats.total_trees_planted?.toFixed(2) || 0 }}</div>
+                <div class="text-sm md:text-base opacity-90">{{ $t('home.globalStats.trees') }}</div>
+              </div>
+              <div class="text-center">
+                <div class="text-4xl md:text-5xl font-black mb-2">{{ statsStore.globalStats.total_trips || 0 }}</div>
+                <div class="text-sm md:text-base opacity-90">{{ $t('home.globalStats.trips') }}</div>
+              </div>
+              <div class="text-center">
+                <div class="text-4xl md:text-5xl font-black mb-2">{{ statsStore.globalStats.total_users || 0 }}</div>
+                <div class="text-sm md:text-base opacity-90">{{ $t('home.globalStats.users') }}</div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <!-- Stats utilisateur -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
-            <div class="text-3xl font-bold text-ecoGreen">{{ userStore.user.co2_saved || 0 }} kg</div>
-            <div class="text-sm text-gray-600 mt-1">CO₂ économisé</div>
-          </div>
-          <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
-            <div class="text-3xl font-bold text-ecoGreen">{{ userStore.user.tree_planted || 0 }}</div>
-            <div class="text-sm text-gray-600 mt-1">Arbres plantés</div>
-          </div>
-          <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
-            <div class="text-3xl font-bold text-ecoGreen">0</div>
-            <div class="text-sm text-gray-600 mt-1">Trajets partagés</div>
-          </div>
-        </div>
-
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <router-link
-            to="/create-trip"
-            class="bg-gradient-to-r from-ecoGreen to-green-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 text-center flex items-center justify-center gap-2"
-          >
-            <span>🚗</span> Créer un trajet
+        <nav class="flex flex-col sm:flex-row gap-4 justify-center">
+          <router-link to="/create-trip" class="btn-primary btn-lg text-center flex items-center justify-center gap-2">
+            <span>🚗</span> {{ $t('home.loggedIn.createTrip') }}
           </router-link>
 
-          <router-link
-            to="/trajets"
-            class="bg-white border-2 border-ecoGreen text-ecoGreen px-8 py-4 rounded-xl font-semibold hover:bg-ecoGreen hover:text-white transition-all duration-200 text-center"
-          >
+          <router-link to="/trajets" class="btn-secondary btn-lg text-center">
             {{ $t('home.loggedIn.seeTrips') }}
           </router-link>
-        </div>
-      </div>
-    </div>
+        </nav>
+      </article>
+    </section>
 
     </div>
-  </div>
+  </main>
 </template>

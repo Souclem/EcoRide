@@ -16,6 +16,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^8.5.3",
     "axios": "^1.13.2",
     "leaflet": "^1.9.4",
     "pinia": "^3.0.3",

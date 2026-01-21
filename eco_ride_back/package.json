@@ -5,7 +5,14 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:db": "node test-db.js",
+    "db:reload": "node ../sql/reload.js",
+    "db:reload:prod": "node ../sql/reload.js prod",
+    "db:reload:test": "node ../sql/reload.js test"
   },
   "keywords": [],
   "author": "Clément Lonneux",
@@ -18,9 +25,17 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.15.3",
-    "pg": "^8.12.0"
+    "pg": "^8.12.0",
+    "stripe": "^20.0.0"
   },
   "devDependencies": {
+    "jest": "^30.2.0",
     "nodemon": "^3.1.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": ["<rootDir>/tests/setup.js"],
+    "coveragePathIgnorePatterns": ["/node_modules/"],
+    "testMatch": ["**/tests/**/*.test.js"]
   }
 }

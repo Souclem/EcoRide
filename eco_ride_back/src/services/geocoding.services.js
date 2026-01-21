@@ -16,7 +16,7 @@ const GeocodingServices = {
                         q: query,
                         format: "json",
                         limit: limit,
-                        countrycodes: "fr"
+                        countrycodes: "fr,be,lu,ch"
                     },
                     headers: {
                         "User-Agent": "EcoRide App"

@@ -5,8 +5,4 @@ export class User {
     this.name = dto.name || null;
     this.role = dto.role || "user";
   }
-
-  isAdmin() {
-    return this.role === "admin";
-  }
 }

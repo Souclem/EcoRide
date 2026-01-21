@@ -87,3 +87,76 @@ export function getRoute(startLat, startLng, endLat, endLng) {
 export function getMyTrips() {
   return axios.get("/trips/my/trips");
 }
+
+/**
+ * Calculer le prix d'un trajet avec promotions et abonnements
+ * @param {number} tripId - ID du trajet
+ * @param {number} seatsBooked - Nombre de places à réserver
+ * @returns {Promise}
+ */
+export function calculateTripPricing(tripId, seatsBooked = 1) {
+  return axios.get("/trips/pricing", {
+    params: { tripId, seatsBooked }
+  });
+}
+
+/**
+ * Ouvrir un trajet (conducteur uniquement)
+ * @param {number} tripId - ID du trajet
+ * @param {number} latitude - Latitude actuelle du conducteur
+ * @param {number} longitude - Longitude actuelle du conducteur
+ * @returns {Promise}
+ */
+export function openTrip(tripId, latitude, longitude) {
+  return axios.post(`/trips/${tripId}/open`, { latitude, longitude });
+}
+
+/**
+ * Démarrer un trajet (conducteur uniquement)
+ * @param {number} tripId - ID du trajet
+ * @returns {Promise}
+ */
+export function startTrip(tripId) {
+  return axios.post(`/trips/${tripId}/start`);
+}
+
+/**
+ * Terminer un trajet (conducteur uniquement)
+ * @param {number} tripId - ID du trajet
+ * @param {number} latitude - Latitude actuelle du conducteur
+ * @param {number} longitude - Longitude actuelle du conducteur
+ * @returns {Promise}
+ */
+export function completeTrip(tripId, latitude, longitude) {
+  return axios.post(`/trips/${tripId}/complete`, { latitude, longitude });
+}
+
+// ==================== ADMIN ONLY ====================
+
+/**
+ * Récupérer tous les trajets (ADMIN peut voir tous les statuts)
+ * @param {Object} filters - Filtres optionnels (status, startDate, endDate, etc.)
+ * @returns {Promise}
+ */
+export function getAllTrips(filters = {}) {
+  return axios.get('/trips', { params: filters });
+}
+
+/**
+ * Mettre à jour un trajet (ADMIN peut modifier tous les champs)
+ * @param {number} tripId - ID du trajet
+ * @param {Object} updates - Champs à mettre à jour
+ * @returns {Promise}
+ */
+export function updateTrip(tripId, updates) {
+  return axios.put(`/trips/${tripId}`, updates);
+}
+
+/**
+ * Supprimer un trajet (ADMIN uniquement)
+ * @param {number} tripId - ID du trajet
+ * @returns {Promise}
+ */
+export function deleteTrip(tripId) {
+  return axios.delete(`/trips/${tripId}`);
+}
