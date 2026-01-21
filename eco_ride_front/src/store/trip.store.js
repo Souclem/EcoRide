@@ -115,6 +115,127 @@ export const useTripStore = defineStore('trip', () => {
     }
   }
 
+  async function calculateTripPricing(tripId, seatsBooked = 1) {
+    try {
+      const response = await tripApi.calculateTripPricing(tripId, seatsBooked)
+      return response.data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Erreur lors du calcul du prix'
+      throw err
+    }
+  }
+
+  async function openTrip(tripId, latitude, longitude) {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await tripApi.openTrip(tripId, latitude, longitude)
+      if (currentTrip.value && currentTrip.value.id === tripId) {
+        currentTrip.value = new Trip(response.data.trip)
+      }
+      return response.data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Erreur lors de l\'ouverture du trajet'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function startTrip(tripId) {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await tripApi.startTrip(tripId)
+      if (currentTrip.value && currentTrip.value.id === tripId) {
+        currentTrip.value = new Trip(response.data.trip)
+      }
+      return response.data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Erreur lors du démarrage du trajet'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function completeTrip(tripId, latitude, longitude) {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await tripApi.completeTrip(tripId, latitude, longitude)
+      if (currentTrip.value && currentTrip.value.id === tripId) {
+        currentTrip.value = new Trip(response.data.trip)
+      }
+      return response.data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Erreur lors de la finalisation du trajet'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // ==================== ADMIN ONLY ====================
+
+  const allTrips = ref([]) // ADMIN: liste de tous les trajets
+
+  async function fetchAllTrips() {
+    loading.value = true
+    error.value = null
+
+    try {
+      // Admin doit voir TOUS les trajets (tous statuts)
+      const response = await tripApi.getAllTrips({ status: 'all' })
+      allTrips.value = response.data.trips || response.data
+      return allTrips.value
+    } catch (err) {
+      error.value = err.response?.data?.error || 'Erreur lors de la récupération des trajets'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function updateTrip(tripId, updates) {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await tripApi.updateTrip(tripId, updates)
+      // Mettre à jour localement si possible
+      const index = allTrips.value.findIndex(t => t.id === tripId)
+      if (index !== -1) {
+        allTrips.value[index] = { ...allTrips.value[index], ...updates }
+      }
+      return response.data
+    } catch (err) {
+      error.value = err.response?.data?.error || 'Erreur lors de la mise à jour'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function deleteTrip(tripId) {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await tripApi.deleteTrip(tripId)
+      await fetchAllTrips() // Rafraîchir la liste
+      return response.data
+    } catch (err) {
+      error.value = err.response?.data?.error || 'Erreur lors de la suppression'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   function clearError() {
     error.value = null
   }
@@ -123,6 +244,7 @@ export const useTripStore = defineStore('trip', () => {
     // State
     trips,
     currentTrip,
+    allTrips,
     loading,
     error,
     // Actions
@@ -134,6 +256,14 @@ export const useTripStore = defineStore('trip', () => {
     reverseGeocode,
     getRoute,
     fetchMyTrips,
+    calculateTripPricing,
+    openTrip,
+    startTrip,
+    completeTrip,
+    // Admin Actions
+    fetchAllTrips,
+    updateTrip,
+    deleteTrip,
     clearError
   }
 })

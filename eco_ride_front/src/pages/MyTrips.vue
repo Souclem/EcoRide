@@ -1,12 +1,26 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { useTripStore } from '../store/trip.store'
+import { useBookingStore } from '../store/booking.store'
+import { useTripReview } from '../composables/useTripReview'
+import { formatDate } from '../utils/formatters'
+import TripCard from '../components/trip/TripCard.vue'
+import AlertMessage from '../components/ui/AlertMessage.vue'
 
+const { t } = useI18n()
+const router = useRouter()
 const tripStore = useTripStore()
+const bookingStore = useBookingStore()
 
 const ongoingTrips = ref([])
 const upcomingTrips = ref([])
 const pastTrips = ref([])
+const errorMessage = ref('')
+
+// Composable pour les avis
+const review = useTripReview(bookingStore)
 
 onMounted(async () => {
   try {
@@ -26,42 +40,50 @@ onMounted(async () => {
       upcoming: upcomingTrips.value.length,
       past: pastTrips.value.length
     })
+
+    // Déboguer les passagers
+    upcomingTrips.value.forEach(trip => {
+      if (trip.role === 'driver' && trip.passengers) {
+        console.log('👥 Passagers du trajet', trip.id, ':', trip.passengers)
+      }
+    })
   } catch (error) {
     console.error('❌ Erreur chargement trajets:', error)
+    errorMessage.value = error.response?.data?.message || error.message || 'Erreur lors du chargement de vos trajets'
   }
 })
-
-// Formater la date
-function formatDate(dateString) {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('fr-FR', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
 
 // Obtenir le badge de rôle
 function getRoleBadge(role) {
   return role === 'driver'
-    ? { text: 'Conducteur', class: 'bg-blue-100 text-blue-800' }
-    : { text: 'Passager', class: 'bg-green-100 text-green-800' }
+    ? { text: t('myTrips.driver'), class: 'badge-info' }
+    : { text: t('myTrips.passenger'), class: 'badge-success' }
+}
+
+// Naviguer vers la page trajet en cours
+function goToOngoingTrip() {
+  router.push('/trajet-en-cours')
 }
 </script>
 
 <template>
-  <div class="w-full px-4 py-8">
+  <main class="w-full px-4 py-8">
     <div class="max-w-6xl mx-auto">
       <!-- En-tête -->
-      <div class="mb-8">
+      <header class="mb-8">
         <h1 class="text-4xl font-bold bg-gradient-to-r from-ecoGreen to-green-600 bg-clip-text text-transparent mb-2">
-          Mes trajets
+          {{ $t('myTrips.title') }}
         </h1>
-        <p class="text-gray-600">Gérez vos trajets en cours, à venir et votre historique</p>
-      </div>
+        <p class="text-gray-600">{{ $t('myTrips.subtitle') }}</p>
+      </header>
+
+      <!-- Message d'erreur -->
+      <AlertMessage
+        v-if="errorMessage"
+        type="error"
+        :message="errorMessage"
+        class="mb-6"
+      />
 
       <!-- Loading -->
       <div v-if="tripStore.loading" class="flex justify-center items-center py-20">
@@ -71,182 +93,246 @@ function getRoleBadge(role) {
       <!-- Contenu -->
       <div v-else class="space-y-8">
 
-        <!-- 🔴 TRAJETS EN COURS (Priorité maximale) -->
-        <section v-if="ongoingTrips.length > 0" class="bg-red-50 rounded-2xl p-6 border-2 border-red-200">
-          <h2 class="text-2xl font-bold text-red-700 mb-4 flex items-center gap-2">
-            🚗 En cours maintenant
-            <span class="text-sm font-normal text-red-600">({{ ongoingTrips.length }})</span>
-          </h2>
-
-          <div class="space-y-4">
-            <div
-              v-for="trip in ongoingTrips"
-              :key="trip.id"
-              class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
-            >
-              <div class="flex justify-between items-start mb-4">
-                <div>
-                  <span
-                    :class="getRoleBadge(trip.role).class"
-                    class="px-3 py-1 rounded-full text-xs font-semibold"
-                  >
-                    {{ getRoleBadge(trip.role).text }}
-                  </span>
-                </div>
-                <div class="text-right">
-                  <div class="text-2xl font-bold text-ecoGreen">{{ trip.price_per_seat }}€</div>
-                  <div class="text-xs text-gray-500">par siège</div>
-                </div>
+        <!-- 🔴 LIEN VERS TRAJETS EN COURS -->
+        <section
+          v-if="ongoingTrips.length > 0"
+          class="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-6 border-2 border-orange-300 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+          @click="goToOngoingTrip"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center animate-pulse">
+                <span class="text-3xl">🚗</span>
               </div>
-
-              <div class="space-y-3">
-                <div class="flex items-start gap-3">
-                  <span class="text-2xl">🟢</span>
-                  <div class="flex-1">
-                    <div class="font-semibold text-gray-900">{{ trip.start_address }}</div>
-                    <div class="text-sm text-gray-500">Départ</div>
-                  </div>
-                </div>
-
-                <div class="flex items-center gap-3 pl-9">
-                  <div class="text-sm text-gray-400">{{ trip.distance_km }} km • {{ formatDate(trip.start_date) }}</div>
-                </div>
-
-                <div class="flex items-start gap-3">
-                  <span class="text-2xl">🔴</span>
-                  <div class="flex-1">
-                    <div class="font-semibold text-gray-900">{{ trip.end_address }}</div>
-                    <div class="text-sm text-gray-500">Arrivée</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-4 pt-4 border-t flex justify-between items-center">
-                <div class="text-sm text-gray-600">
-                  <span v-if="trip.role === 'driver'">
-                    {{ trip.taken_seats || 0 }}/{{ trip.total_seats }} places réservées
-                  </span>
-                  <span v-else>
-                    {{ trip.seats_booked }} place(s) réservée(s)
-                  </span>
-                </div>
-                <div class="text-sm font-semibold text-red-600 animate-pulse">
-                  ⏱️ En cours
-                </div>
+              <div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-1">
+                  {{ ongoingTrips.length }} trajet{{ ongoingTrips.length > 1 ? 's' : '' }} en cours
+                </h2>
+                <p class="text-gray-600">
+                  Cliquez pour gérer {{ ongoingTrips.length > 1 ? 'vos trajets actifs' : 'votre trajet actif' }}
+                </p>
               </div>
             </div>
+            <button
+              class="btn btn-primary flex items-center gap-2 shadow-md"
+              @click.stop="goToOngoingTrip"
+            >
+              Voir le trajet
+              <span class="text-xl">→</span>
+            </button>
           </div>
         </section>
 
         <!-- 🟡 TRAJETS À VENIR -->
         <section>
           <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-            📅 À venir
+            📅 {{ $t('myTrips.upcoming') }}
             <span class="text-sm font-normal text-gray-600">({{ upcomingTrips.length }})</span>
           </h2>
 
           <div v-if="upcomingTrips.length === 0" class="bg-gray-50 rounded-xl p-8 text-center text-gray-500">
-            Aucun trajet à venir
+            {{ $t('myTrips.noUpcoming') }}
           </div>
 
-          <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div
+          <div v-else class="grid grid-cols-1 gap-4">
+            <TripCard
               v-for="trip in upcomingTrips"
               :key="trip.id"
-              class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow"
+              :trip="trip"
+              :show-driver="false"
+              :show-price="true"
+              :show-eco-impact="true"
+              :seats="trip.role === 'passenger' ? trip.seats_booked : 1"
             >
-              <div class="flex justify-between items-start mb-4">
-                <span
-                  :class="getRoleBadge(trip.role).class"
-                  class="px-3 py-1 rounded-full text-xs font-semibold"
-                >
+              <!-- Badge de rôle -->
+              <template #badge>
+                <span :class="getRoleBadge(trip.role).class">
                   {{ getRoleBadge(trip.role).text }}
                 </span>
-                <div class="text-right">
-                  <div class="text-xl font-bold text-ecoGreen">{{ trip.price_per_seat }}€</div>
-                </div>
-              </div>
+              </template>
 
-              <div class="space-y-2 mb-4">
-                <div class="flex items-center gap-2">
-                  <span>🟢</span>
-                  <div class="text-sm font-medium truncate">{{ trip.start_address.split(',')[0] }}</div>
+              <!-- Contenu additionnel -->
+              <template #additional-content>
+                <!-- Code de validation pour passager -->
+                <div v-if="trip.role === 'passenger' && trip.validation_code" class="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div class="text-xs text-gray-600 mb-1">{{ $t('myTrips.validationCode') }}</div>
+                  <div class="text-2xl font-bold text-ecoGreen tracking-wider">{{ trip.validation_code }}</div>
+                  <div class="text-xs text-gray-500 mt-1">{{ $t('myTrips.showToDriver') }}</div>
                 </div>
-                <div class="flex items-center gap-2">
-                  <span>🔴</span>
-                  <div class="text-sm font-medium truncate">{{ trip.end_address.split(',')[0] }}</div>
+
+                <!-- Liste des participants pour conducteur -->
+                <div v-if="trip.role === 'driver' && trip.passengers && trip.passengers.length > 0" class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div class="text-sm font-semibold text-gray-700 mb-2">
+                    👥 Passagers ({{ trip.passengers.length }})
+                  </div>
+                  <div class="space-y-2">
+                    <div v-for="passenger in trip.passengers" :key="passenger.id" class="bg-white p-3 rounded">
+                      <div class="flex items-start gap-2">
+                        <span class="text-lg">👤</span>
+                        <div class="flex-1">
+                          <div class="font-medium text-sm">{{ passenger.passenger_name || passenger.name }} {{ passenger.passenger_last_name || passenger.last_name }}</div>
+                          <div class="text-xs text-gray-600 mt-1">📧 {{ passenger.passenger_email || passenger.email }}</div>
+                          <div class="text-xs text-gray-500 mt-1">{{ passenger.seats_booked }} place{{ passenger.seats_booked > 1 ? 's' : '' }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <div class="text-xs text-gray-500 mb-2">
-                {{ formatDate(trip.start_date) }}
-              </div>
-
-              <div class="text-sm text-gray-600">
-                <span v-if="trip.role === 'driver'">
-                  {{ trip.taken_seats || 0 }}/{{ trip.total_seats }} places
-                </span>
-                <span v-else>
-                  {{ trip.seats_booked }} place(s)
-                </span>
-              </div>
-            </div>
+                <!-- Message si aucun passager -->
+                <div v-else-if="trip.role === 'driver' && trip.taken_seats === 0" class="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-lg text-center text-sm text-gray-500">
+                  Aucun passager pour ce trajet
+                </div>
+              </template>
+            </TripCard>
           </div>
         </section>
 
         <!-- 📦 HISTORIQUE -->
         <section>
           <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-            📦 Historique
+            📦 {{ $t('myTrips.history') }}
             <span class="text-sm font-normal text-gray-600">({{ pastTrips.length }})</span>
           </h2>
 
           <div v-if="pastTrips.length === 0" class="bg-gray-50 rounded-xl p-8 text-center text-gray-500">
-            Aucun trajet dans l'historique
+            {{ $t('myTrips.noHistory') }}
           </div>
 
-          <div v-else class="space-y-3">
-            <div
+          <div v-else class="grid grid-cols-1 gap-4">
+            <TripCard
               v-for="trip in pastTrips"
               :key="trip.id"
-              class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors"
+              :trip="trip"
+              :show-driver="false"
+              :show-price="true"
+              :show-eco-impact="trip.role === 'driver'"
+              :seats="trip.role === 'passenger' ? trip.seats_booked : 1"
             >
-              <div class="flex justify-between items-center">
-                <div class="flex items-center gap-4 flex-1">
-                  <span
-                    :class="getRoleBadge(trip.role).class"
-                    class="px-2 py-1 rounded-full text-xs font-semibold"
+              <!-- Badge de rôle -->
+              <template #badge>
+                <span :class="getRoleBadge(trip.role).class">
+                  {{ getRoleBadge(trip.role).text }}
+                </span>
+              </template>
+
+              <!-- Contenu additionnel: gains pour conducteur OU avis pour passager -->
+              <template #additional-content>
+                <!-- Gains conducteur -->
+                <div v-if="trip.role === 'driver'" class="mt-3 flex items-center gap-2 p-3 bg-green-50 rounded-lg">
+                  <span class="text-2xl">💰</span>
+                  <div>
+                    <div class="text-xs text-gray-500">{{ $t('myTrips.earnings') }}</div>
+                    <div class="font-bold text-ecoGreen text-lg">{{ trip.earnings || 0 }}€</div>
+                  </div>
+                </div>
+
+                <!-- Section avis passagers -->
+                <div v-else-if="trip.role === 'passenger'" class="mt-3 pt-3 border-t border-gray-200">
+                <!-- Avis déjà soumis -->
+                <div v-if="trip.rating" class="bg-green-50 rounded-lg p-3">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-sm font-medium text-gray-700">Votre avis :</span>
+                    <div class="flex gap-0.5">
+                      <span
+                        v-for="star in 5"
+                        :key="star"
+                        :class="star <= trip.rating ? 'text-yellow-400' : 'text-gray-300'"
+                      >
+                        ★
+                      </span>
+                    </div>
+                  </div>
+                  <p v-if="trip.review_comment" class="text-sm text-gray-600 italic">
+                    "{{ trip.review_comment }}"
+                  </p>
+                  <p class="text-xs text-gray-500 mt-1">
+                    Noté le {{ new Date(trip.reviewed_at).toLocaleDateString('fr-FR') }}
+                  </p>
+                </div>
+
+                <!-- Formulaire de notation (si pas encore noté et dans les délais) -->
+                <div v-else-if="review.canReview(trip)">
+                  <!-- Bouton pour ouvrir le formulaire -->
+                  <button
+                    v-if="!review.isReviewFormOpen(trip.id)"
+                    @click="review.openReviewForm(trip.id)"
+                    class="text-sm text-ecoGreen hover:text-green-700 font-medium flex items-center gap-1"
                   >
-                    {{ getRoleBadge(trip.role).text }}
-                  </span>
+                    ⭐ Noter ce trajet
+                  </button>
 
-                  <div class="flex-1">
-                    <div class="text-sm font-medium text-gray-900">
-                      {{ trip.start_address.split(',')[0] }} → {{ trip.end_address.split(',')[0] }}
+                  <!-- Formulaire de notation -->
+                  <div v-else class="bg-blue-50 rounded-lg p-4">
+                    <h4 class="text-sm font-semibold text-gray-800 mb-3">Noter ce trajet</h4>
+
+                    <!-- Sélection des étoiles -->
+                    <div class="mb-3">
+                      <label class="block text-xs text-gray-600 mb-2">Votre note *</label>
+                      <div class="flex gap-1">
+                        <button
+                          v-for="star in 5"
+                          :key="star"
+                          @click="review.setRating(trip.id, star)"
+                          type="button"
+                          :class="[
+                            'text-3xl transition-all',
+                            review.reviewForms.value[trip.id]?.rating >= star ? 'text-yellow-400 scale-110' : 'text-gray-300 hover:text-yellow-200'
+                          ]"
+                        >
+                          ★
+                        </button>
+                      </div>
                     </div>
-                    <div class="text-xs text-gray-500">
-                      {{ formatDate(trip.start_date) }}
+
+                    <!-- Commentaire optionnel -->
+                    <div class="mb-3">
+                      <label class="block text-xs text-gray-600 mb-1">Commentaire (optionnel)</label>
+                      <textarea
+                        v-model="review.reviewForms.value[trip.id].comment"
+                        rows="2"
+                        placeholder="Partagez votre expérience..."
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-ecoGreen focus:border-transparent"
+                      ></textarea>
+                    </div>
+
+                    <!-- Erreur -->
+                    <div v-if="review.getReviewError(trip.id)" class="mb-3 text-xs text-red-600">
+                      {{ review.getReviewError(trip.id) }}
+                    </div>
+
+                    <!-- Boutons -->
+                    <div class="flex gap-2">
+                      <button
+                        @click="review.submitReview(trip)"
+                        :disabled="review.reviewForms.value[trip.id]?.submitting"
+                        class="btn btn-sm btn-primary flex-1"
+                      >
+                        <span v-if="review.reviewForms.value[trip.id]?.submitting">Envoi...</span>
+                        <span v-else>Soumettre</span>
+                      </button>
+                      <button
+                        @click="review.closeReviewForm(trip.id)"
+                        :disabled="review.reviewForms.value[trip.id]?.submitting"
+                        class="btn btn-sm btn-secondary"
+                      >
+                        Annuler
+                      </button>
                     </div>
                   </div>
                 </div>
 
-                <div class="text-right">
-                  <div class="font-bold text-gray-700">{{ trip.price_per_seat }}€</div>
-                  <div class="text-xs text-gray-500">
-                    <span v-if="trip.role === 'driver'">{{ trip.total_seats }} places</span>
-                    <span v-else>{{ trip.seats_booked }} place(s)</span>
-                  </div>
+                <!-- Délai dépassé -->
+                <div v-else class="text-xs text-gray-400 italic">
+                  Le délai pour noter ce trajet est dépassé (max 1 mois)
                 </div>
-              </div>
-            </div>
+                </div>
+              </template>
+            </TripCard>
           </div>
         </section>
 
       </div>
     </div>
-  </div>
+  </main>
 </template>
-
-<style scoped>
-/* Animations personnalisées si nécessaire */
-</style>

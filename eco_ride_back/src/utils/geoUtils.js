@@ -32,15 +32,50 @@ function toRad(degrees) {
 }
 
 /**
- * Calcule le CO2 économisé basé sur la distance
- * Formule : distance_km * nb_passagers * 148g (émission moyenne voiture par km par personne)
+ * Récupère les paramètres éco depuis app_settings
+ * @returns {Promise<{co2PerKm: number, treesPerKm: number}>}
+ */
+async function getEcoSettings() {
+    const db = require("../config/db");
+
+    return new Promise((resolve, reject) => {
+        db.query(
+            "SELECT `key`, value FROM app_settings WHERE `key` IN ('co2_saved_per_km', 'trees_per_km')",
+            (err, results) => {
+                if (err) return reject(err);
+                const settings = {};
+                results.forEach(row => {
+                    settings[row.key] = parseFloat(row.value);
+                });
+                resolve({
+                    co2PerKm: settings.co2_saved_per_km || 0.15,
+                    treesPerKm: settings.trees_per_km || 0.01
+                });
+            }
+        );
+    });
+}
+
+/**
+ * Calcule le CO2 économisé basé sur la distance (arrondi vers le bas)
  * @param {number} distanceKm - Distance en kilomètres
  * @param {number} passengers - Nombre de passagers
- * @returns {number} CO2 en grammes
+ * @returns {Promise<number>} CO2 en kg (arrondi vers le bas)
  */
-function calculateCO2Saved(distanceKm, passengers) {
-    const CO2_PER_KM_PER_PERSON = 148; // grammes
-    return Math.round(distanceKm * passengers * CO2_PER_KM_PER_PERSON);
+async function calculateCO2Saved(distanceKm, passengers) {
+    const { co2PerKm } = await getEcoSettings();
+    return Math.floor(distanceKm * passengers * co2PerKm);
+}
+
+/**
+ * Calcule les arbres plantés basé sur la distance (arrondi vers le bas)
+ * @param {number} distanceKm - Distance en kilomètres
+ * @param {number} passengers - Nombre de passagers
+ * @returns {Promise<number>} Nombre d'arbres (arrondi vers le bas)
+ */
+async function calculateTreesPlanted(distanceKm, passengers) {
+    const { treesPerKm } = await getEcoSettings();
+    return Math.floor(distanceKm * passengers * treesPerKm);
 }
 
 /**
@@ -58,5 +93,6 @@ function calculateSuggestedPrice(distanceKm) {
 module.exports = {
     calculateDistance,
     calculateCO2Saved,
+    calculateTreesPlanted,
     calculateSuggestedPrice
 };

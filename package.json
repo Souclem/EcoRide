@@ -1,0 +1,20 @@
+{
+  "name": "eco-ride",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Souclem/EcoRide.git"
+  },
+  "private": true,
+  "dependencies": {
+    "vue-i18n": "^11.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.9"
+  }
+}

@@ -4,7 +4,14 @@
     "login": "Connexion",
     "register": "Inscription",
     "logout": "Déconnexion",
-    "language": "Langue"
+    "language": "Langue",
+    "search": "Rechercher",
+    "createTrip": "Créer un trajet",
+    "myTrips": "Mes trajets",
+    "admin": "Administration",
+    "marketing": "Marketing",
+    "freePlan": "Gratuit",
+    "currentPlan": "Plan"
   },
   "auth": {
     "login": {
@@ -14,7 +21,11 @@
       "submit": "Se connecter",
       "noAccount": "Pas encore de compte ?",
       "createAccount": "Créer un compte",
-      "error": "Identifiants incorrects"
+      "error": "Identifiants incorrects",
+      "loading": "Connexion en cours...",
+      "fillAllFields": "Veuillez remplir tous les champs",
+      "invalidEmail": "Email invalide",
+      "incorrectCredentials": "Identifiants incorrects"
     },
     "register": {
       "title": "Créer un compte",
@@ -23,16 +34,26 @@
       "email": "Email",
       "password": "Mot de passe",
       "confirmPassword": "Confirmer le mot de passe",
-      "language": "Langue de préférence (optionnel)",
+      "language": "Langue de préférence",
       "submit": "S'inscrire",
       "hasAccount": "Déjà un compte ?",
       "loginLink": "Se connecter",
       "required": "obligatoire",
       "optional": "optionnel",
+      "loading": "Inscription en cours...",
       "errors": {
         "passwordMismatch": "Les mots de passe ne correspondent pas",
         "fillRequired": "Veuillez remplir tous les champs obligatoires",
-        "emailExists": "Cet email est déjà utilisé"
+        "emailExists": "Cet email est déjà utilisé",
+        "firstnameRequired": "Le prénom est obligatoire",
+        "lastnameRequired": "Le nom est obligatoire",
+        "emailRequired": "L'email est obligatoire",
+        "emailInvalid": "Format d'email invalide",
+        "passwordRequired": "Le mot de passe est obligatoire",
+        "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+        "confirmPasswordRequired": "Veuillez confirmer le mot de passe",
+        "registrationError": "Erreur lors de l'inscription",
+        "correctErrors": "Veuillez corriger les erreurs dans le formulaire"
       }
     }
   },
@@ -47,7 +68,171 @@
     "loggedIn": {
       "greeting": "Bonjour, {name} !",
       "message": "Prêt à optimiser vos trajets et à économiser du CO₂ ?",
-      "seeTrips": "Voir les trajets disponibles"
+      "seeTrips": "Voir les trajets disponibles",
+      "createTrip": "Créer un trajet"
+    },
+    "features": {
+      "save": {
+        "title": "Économisez",
+        "description": "Réduisez vos frais de transport en partageant vos trajets"
+      },
+      "eco": {
+        "title": "Écologique",
+        "description": "Réduisez votre empreinte carbone et plantez des arbres"
+      },
+      "community": {
+        "title": "Communauté",
+        "description": "Rencontrez de nouvelles personnes et partagez vos trajets"
+      }
+    },
+    "stats": {
+      "co2Saved": "CO₂ économisé",
+      "treesPlanted": "Arbres plantés",
+      "tripsShared": "Trajets partagés"
+    },
+    "globalStats": {
+      "title": "Impact Collectif EcoRide",
+      "co2": "kg CO₂ économisés",
+      "trees": "Arbres équivalents",
+      "trips": "Trajets partagés",
+      "users": "Éco-rideurs"
+    }
+  },
+  "createTrip": {
+    "title": "Créer un trajet",
+    "subtitle": "Proposez un covoiturage et partagez vos frais de transport",
+    "formTitle": "Détails du trajet",
+    "startPoint": "Point de départ",
+    "endPoint": "Point d'arrivée",
+    "startPlaceholder": "Ex: 10 Rue de la Gare, Paris",
+    "endPlaceholder": "Ex: 5 Place Bellecour, Lyon",
+    "date": "Date",
+    "time": "Heure",
+    "pricePerSeat": "Prix par siège (€)",
+    "suggestedPrice": "(suggéré: {price}€)",
+    "adjustPrice": "Vous pouvez ajuster le prix suggéré",
+    "availableSeats": "Places disponibles",
+    "requiredFields": "Champs obligatoires",
+    "submit": "Créer le trajet 🚗",
+    "creating": "Création en cours...",
+    "mapTitle": "Cliquez sur la carte pour définir votre itinéraire",
+    "mapSubtitle": "Ou utilisez la recherche d'adresse",
+    "routeInfo": {
+      "distance": "Distance: {distance} km",
+      "routeType": "Itinéraire routier (OSRM)",
+      "duration": "Durée estimée: {duration}",
+      "arrival": "Arrivée prévue: {time}"
+    },
+    "errors": {
+      "selectAddresses": "Veuillez sélectionner un point de départ et d'arrivée",
+      "routeNotCalculated": "L'itinéraire n'a pas été calculé",
+      "dateRequired": "La date de départ est obligatoire",
+      "timeRequired": "L'heure de départ est obligatoire",
+      "futureDateRequired": "La date de départ doit être dans le futur",
+      "priceRequired": "Le prix doit être supérieur à 0€",
+      "priceTooHigh": "Le prix semble trop élevé (max 500€)",
+      "seatsRequired": "Le nombre de places doit être supérieur à 0",
+      "seatsMax": "Le nombre de places ne peut pas dépasser 8",
+      "correctErrors": "Veuillez corriger les erreurs dans le formulaire",
+      "creationError": "Erreur lors de la création du trajet"
+    },
+    "success": "Trajet créé avec succès !"
+  },
+  "listTrips": {
+    "title": "Rechercher un trajet",
+    "subtitle": "Trouvez un covoiturage qui correspond à vos besoins",
+    "searchTitle": "Recherche géographique",
+    "searchDescription": "Utilisez la carte ou la recherche pour définir votre trajet. Les trajets dans un rayon de {radius}km seront affichés.",
+    "startPoint": "Point de départ",
+    "endPoint": "Point d'arrivée",
+    "startPlaceholder": "Ville de départ",
+    "endPlaceholder": "Ville d'arrivée",
+    "radius": "Rayon de recherche: {radius} km",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "search": "Rechercher",
+    "reset": "Réinitialiser",
+    "mapTitle": "Carte de recherche",
+    "mapDescription": "Cliquez pour définir votre trajet - Les cercles montrent le rayon de recherche",
+    "mapZoomTip": "Cliquez sur la carte puis utilisez Ctrl+Scroll pour zoomer",
+    "loading": "Chargement des trajets...",
+    "noTripsFound": "Aucun trajet trouvé",
+    "noTripsMessage": "Essayez d'augmenter le rayon de recherche ou de modifier vos critères",
+    "resetFilters": "Réinitialiser les filtres",
+    "resultsCount": "{count} trajet trouvé | {count} trajets trouvés",
+    "radiusInfo": "dans un rayon de {radius}km",
+    "clickForDetails": "Cliquez pour voir les détails",
+    "book": "Réserver",
+    "driver": "Conducteur",
+    "departure": "Départ",
+    "arrival": "Arrivée",
+    "date": "Date",
+    "distance": "Distance",
+    "seats": "Places",
+    "price": "Prix",
+    "perSeat": "par place",
+    "co2Saved": "{amount} kg CO2 économisés par ce trajet",
+    "error": "Impossible de charger les trajets"
+  },
+  "myTrips": {
+    "title": "Mes trajets",
+    "subtitle": "Gérez vos trajets en cours, à venir et votre historique",
+    "ongoing": "En cours maintenant",
+    "upcoming": "À venir",
+    "history": "Historique",
+    "noOngoing": "Aucun trajet en cours",
+    "noUpcoming": "Aucun trajet à venir",
+    "noHistory": "Aucun trajet dans l'historique",
+    "driver": "Conducteur",
+    "passenger": "Passager",
+    "perSeat": "par siège",
+    "departure": "Départ",
+    "arrival": "Arrivée",
+    "bookedSeats": "{booked} place(s) réservée(s)",
+    "seatsInfo": "{taken}/{total} places réservées",
+    "ongoingStatus": "En cours",
+    "loading": "Chargement...",
+    "validationCode": "Code de validation",
+    "showToDriver": "À montrer au conducteur",
+    "codeUsed": "Code utilisé",
+    "earnings": "Gains",
+    "co2Saved": "CO₂ économisé",
+    "treesPlanted": "Arbres plantés"
+  },
+  "booking": {
+    "title": "Réserver ce trajet",
+    "subtitle": "Complétez votre réservation et votre paiement sécurisé",
+    "confirmed": "Réservation confirmée !",
+    "tripDetails": "Détails du trajet",
+    "departure": "Départ",
+    "arrival": "Arrivée",
+    "date": "Date",
+    "seatsLabel": "Nombre de places",
+    "availableSeats": "{count} place disponible | {count} places disponibles",
+    "pricePerSeat": "Prix par place",
+    "numberOfSeats": "Nombre de places",
+    "total": "Total",
+    "priceBreakdown": "Détail du prix",
+    "paymentInfo": "Informations de paiement",
+    "securedByStripe": "Paiement sécurisé par Stripe",
+    "cancel": "Annuler",
+    "pay": "Payer {amount}€",
+    "processing": "Traitement...",
+    "close": "Fermer",
+    "success": {
+      "title": "Réservation confirmée !",
+      "message": "Votre paiement a été accepté et votre réservation est confirmée.",
+      "validationCode": "Votre code de validation :",
+      "showCodeToDriver": "Présentez ce code au conducteur au début du trajet"
+    },
+    "errors": {
+      "paymentSystemNotReady": "Le système de paiement n'est pas prêt",
+      "mustBeLoggedIn": "Vous devez être connecté pour réserver",
+      "selectSeats": "Veuillez sélectionner au moins 1 place",
+      "notEnoughSeats": "Seulement {count} place(s) disponible(s)",
+      "maxSeats": "Vous ne pouvez pas réserver plus de 8 places",
+      "bookingError": "Erreur lors de la réservation",
+      "stripeError": "Erreur d'initialisation du système de paiement"
     }
   },
   "languages": {
@@ -71,5 +256,201 @@
       "carpooling": "Covoiturage",
       "co2": "Réduction CO₂"
     }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Tableau de bord Admin",
+      "subtitle": "Vue d'ensemble et gestion de la plateforme EcoRide"
+    },
+    "stats": {
+      "totalUsers": "Utilisateurs totaux",
+      "totalTrips": "Trajets totaux",
+      "totalBookings": "Réservations totales",
+      "co2Saved": "CO₂ économisé"
+    },
+    "sections": {
+      "users": "Gestion utilisateurs",
+      "usersDesc": "Voir et gérer tous les utilisateurs inscrits",
+      "trips": "Gestion trajets",
+      "tripsDesc": "Modérer et superviser tous les trajets",
+      "promotions": "Gestion promotions",
+      "promotionsDesc": "Créer et gérer les campagnes promotionnelles",
+      "payments": "Gestion paiements",
+      "paymentsDesc": "Suivre les transactions et les paiements",
+      "reports": "Rapports",
+      "reportsDesc": "Générer des rapports d'activité et statistiques",
+      "settings": "Configuration",
+      "settingsDesc": "Paramètres de la plateforme"
+    },
+    "actions": {
+      "manage": "Gérer",
+      "view": "Voir",
+      "generate": "Générer",
+      "configure": "Configurer"
+    }
+  },
+  "marketer": {
+    "dashboard": {
+      "title": "Tableau de bord Marketing",
+      "subtitle": "Gérez vos campagnes promotionnelles"
+    },
+    "stats": {
+      "activePromotions": "Promotions actives",
+      "totalPromotions": "Total promotions",
+      "usersReached": "Utilisateurs atteints",
+      "conversionRate": "Taux de conversion"
+    },
+    "sections": {
+      "promotionsList": "Liste des promotions"
+    },
+    "actions": {
+      "createPromo": "Créer une promotion",
+      "edit": "Modifier",
+      "delete": "Supprimer"
+    },
+    "messages": {
+      "noPromotions": "Aucune promotion pour le moment",
+      "createFirst": "Créez votre première campagne promotionnelle"
+    }
+  },
+  "subscriptions": {
+    "title": "Plans d'Abonnement",
+    "subtitle": "Profitez d'avantages exclusifs avec nos plans mensuels",
+    "choosePlan": "Choisissez votre plan",
+    "otherPlans": "Autres plans disponibles",
+    "currentPlan": "Votre Abonnement Actuel",
+    "popular": "Populaire",
+    "subscribe": "S'abonner",
+    "alreadySubscribed": "Déjà abonné",
+    "cancel": "Annuler l'abonnement",
+    "confirmSubscription": "Confirmer l'abonnement",
+    "confirmPayment": "Confirmer le paiement",
+    "paymentInfo": "Informations de paiement",
+    "stripeIntegration": "Intégration Stripe à venir...",
+    "changePlan": "Changer de plan",
+    "upgrade": "Passer à ce plan",
+    "downgrade": "Rétrograder vers ce plan",
+    "benefit": {
+      "priority": "Support prioritaire",
+      "cancel": "Annulation à tout moment"
+    },
+    "cancelConfirm": {
+      "title": "Annuler votre abonnement ?",
+      "message": "Vous conserverez l'accès jusqu'au {date}. Voulez-vous continuer ?",
+      "confirm": "Oui, annuler",
+      "cancel": "Non, garder mon abonnement"
+    },
+    "changePlanConfirm": {
+      "upgradeTitle": "Passer à {planName} ?",
+      "upgradeMessage": "Vous serez facturé au prorata immédiatement. Montant estimé : {amount}€",
+      "downgradeTitle": "Rétrograder vers {planName} ?",
+      "downgradeMessage": "Le changement prendra effet le {date}. Vous conservez votre plan actuel jusqu'à cette date.",
+      "confirm": "Confirmer",
+      "cancel": "Annuler"
+    },
+    "errors": {
+      "invalidCardData": "Les données bancaires ne sont pas correctes",
+      "subscriptionError": "Erreur lors de l'abonnement",
+      "cancelError": "Erreur lors de l'annulation",
+      "changePlanError": "Erreur lors du changement de plan"
+    },
+    "success": {
+      "subscribed": "Paiement validé ! Vous êtes désormais souscrit à l'abonnement \"{planName}\".",
+      "cancelled": "Votre abonnement sera annulé le {date}",
+      "upgraded": "Vous êtes passé au plan {planName} !",
+      "downgraded": "Le changement vers {planName} prendra effet le {date}"
+    }
+  },
+  "marketer": {
+    "subscriptions": {
+      "title": "Gestion des Plans d'Abonnement",
+      "subtitle": "Créez et gérez vos plans d'abonnement",
+      "createPlan": "Créer un plan",
+      "editPlan": "Modifier le plan",
+      "myPlans": "Mes plans d'abonnement",
+      "noPlans": "Aucun plan d'abonnement créé",
+      "price": "Prix mensuel",
+      "reduction": "Réduction sur les trajets",
+      "treeMultiplier": "Multiplicateur d'arbres",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "perMonth": "/mois",
+      "trips": "trajets",
+      "trees": "arbres",
+      "confirmDeactivate": "Êtes-vous sûr de vouloir désactiver ce plan ?",
+      "confirmActivate": "Êtes-vous sûr de vouloir activer ce plan ?",
+      "deactivated": "Plan désactivé avec succès",
+      "activated": "Plan activé avec succès"
+    }
+  },
+  "promotions": {
+    "fees": "frais",
+    "trees": "arbres",
+    "zoneRestriction": "zone limitée",
+    "manager": {
+      "title": "Gestion des Promotions",
+      "subtitle": "Créez et gérez vos campagnes promotionnelles",
+      "create": "Créer une promotion",
+      "edit": "Modifier la promotion",
+      "myPromotions": "Mes promotions",
+      "noPromotions": "Aucune promotion créée"
+    },
+    "form": {
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "startTime": "Heure de début",
+      "endTime": "Heure de fin",
+      "validity": "Période de validité",
+      "feeDiscount": "Réduction sur les frais",
+      "feeDiscountHelp": "Pourcentage de réduction appliqué sur les frais de service",
+      "treeMultiplier": "Multiplicateur arbres",
+      "treeMultiplierHelp": "Multiplie le nombre d'arbres plantés (ex: 2.0 = double)",
+      "scope": "Portée",
+      "zoneSettings": "Configuration de la zone",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "radius": "Rayon (km)",
+      "zoneTip": "La promotion s'appliquera si le départ OU l'arrivée est dans cette zone",
+      "imageUrl": "URL de l'image",
+      "translations": "Traductions",
+      "titlePlaceholder": "Titre de la promotion",
+      "descriptionPlaceholder": "Description détaillée",
+      "create": "Créer",
+      "update": "Mettre à jour"
+    },
+    "scope": {
+      "everywhere": "Partout",
+      "zone": "Zone géographique"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "expired": "Expirée"
+    },
+    "messages": {
+      "created": "Promotion créée avec succès",
+      "updated": "Promotion mise à jour avec succès",
+      "deleted": "Promotion supprimée avec succès",
+      "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette promotion ?",
+      "error": "Erreur lors de l'opération",
+      "translationsRequired": "Les traductions FR et EN sont obligatoires",
+      "zoneDataRequired": "Les données de zone sont requises pour une promotion géographique"
+    }
+  },
+  "common": {
+    "loading": "Chargement...",
+    "saving": "Enregistrement...",
+    "processing": "Traitement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "back": "Retour",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "deactivate": "Désactiver",
+    "name": "Nom",
+    "description": "Description"
+  },
+  "error": {
+    "loadingPlans": "Erreur lors du chargement des plans"
   }
 }
